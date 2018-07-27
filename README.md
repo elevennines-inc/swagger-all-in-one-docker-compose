@@ -1,9 +1,14 @@
-### Swagger
-#### 起動方法
+## swagger-all-in-one-docker-container
+### Overview
+I docker composed Swagger Editor, Swagger UI and Swagger mock api server to handle them more easily.
+There is a sample swagger spec in this so the Editor, UI and the mock API server will run without any configuration from the start.
+All you need to do is edit the swagger spec, save swagger.json and swagger.yaml, and restart docker. Voila, UI and the mock API server are updated.
+
+### How to Run
 ```
 docker-compose up -d
 
-こんな感じで起動します
+It will look like this.
 docker-compose ps
          Name                       Command               State           Ports
 ----------------------------------------------------------------------------------------
@@ -12,37 +17,37 @@ swagger-editor   sh /usr/share/nginx/docker ...   Up      0.0.0.0:8081->8080/tcp
 swagger-ui       sh /usr/share/nginx/docker ...   Up      0.0.0.0:8082->8080/tcp
 ```
 
-#### 使い方
-1. swagger-editorでswagger specを編集
-2. swagger specをjsonとyml形式でswagger-editorの画面から保存
-3. 保存したjsonを`swagger/swagger.json`に移動
-4. 保存したyamlを`swagger/swagger.yaml`に移動
-5. `docker-compose restart`でswagger-uiとswagger-api(mock server)に変更が反映される
+### How to Use
+1. Edit swagger spec with swagger-editor
+2. Save swagger spec as json and yaml from swagger-editor File menu
+3. Move and save the json file as `swagger/swagger.json`
+4. Move and save the yaml file as `swagger/swagger.yaml`
+5. Execute `docker-compose restart` and swagger-ui and swagger-api(mock server) will be updated
 
-#### 注意
- `http://localhost:8082/`で参照するとキャッシュで変更が反映されない場合があるので`http://127.0.0.1:8082/`で参照した方が良い(apiも同様)
+### Heads-up
+- When the UI is referenced as `http://localhost:8082/`, cache might be used even the changes are made in swagger files. So it may be better to refference as `http://127.0.0.1:8082/`(api, too.)
+- Whern swagger-api failed to run, it's likely that api server failed to run because the swagger.yml was not properly read. So use `docker logs` command and get rid of the cause then restart it again.
 
+### swagger-editor
+- Can edit swagger spec
+- Can export swagger spec as json, yaml and etc. swagger-ui can read the files and they can be beautifly referenced as documentatioin. swagger-mock-api can read the yml and json then it can serve the mock API.
 
-#### swagger-editor
-- swagger specを編集出来る
-- swagger specはjson形式にしてエクスポート出来、swagger-uiから参照するとドキュメントとして見れる。swagger-api-mock-dockerからymlを参照するとmock api serverになる
-
-#### swagger-ui
-- swagger specをドキュメントとして見れる
-- swagger specは環境変数でjsonファイルまたは、API_URLからjsonを参照できる
+### swagger-ui
+- Can referrence the documentation from swagger spec.
+- swagger spec can be assined from json file path or API_URL path.
 ```
 environment:
   SWAGGER_JSON: /swagger.json
   # API_URL: ""
 ```
-- 現在はこのレポジトリの./swagger/swagger.jsonが参照先になっている
+- ./swagger/swagger.json is refferenced in this repository
 
-#### swagger-api(swagger-api-mock-docker)
-- こちらも./swagger/swagger.ymlが参照先になっている
-- もちろんcurl等で叩けます
+### swagger-api(swagger-mock-api)
+- ./swagger/swagger.yaml is also refferenced from api in this repository
+- Of course, you can use the api from curl, etc.
 
   ```
-  * サンプルです
+  * example
   curl -X GET  "http://127.0.0.1:8083/pet/1" -H "accept: application/json"
 
   {
