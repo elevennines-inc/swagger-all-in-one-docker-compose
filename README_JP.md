@@ -2,7 +2,7 @@
 ### 概要
 Swagger EditorとSwagger UIとSwaggerのモックAPIサーバー(openapi: 3.x)を手軽に同時に環境に立ち上げられるようdocker-compose化してみました
 このコンテナには初期でサンプルのswagger specが入っていて、editor, ui, apiが初期状態で立ち上がり、最初から設定無しで起動出来るようになってます
-あとはEditorでswagger openapi.jsonを保存しコンテナを立ち上げ直すだけで、UIとモックAPIサーバーを最新に更新していくことが出来ます
+あとはEditorでopenapi.jsonを保存しコンテナを立ち上げ直すだけで、UIとモックAPIサーバーを最新に更新していくことが出来ます
 
 ### 起動方法
 ```yaml
@@ -12,7 +12,7 @@ docker-compose up -d
 docker-compose ps
          Name                       Command               State           Ports
 ----------------------------------------------------------------------------------------
-swagger-api      /bin/sh -c grunt                 Up      0.0.0.0:8083->8000/tcp
+swagger-api      /usr/local/bin/apisprout / ...   Up      0.0.0.0:8083->8000/tcp
 swagger-editor   sh /usr/share/nginx/docker ...   Up      0.0.0.0:8081->8080/tcp
 swagger-ui       sh /usr/share/nginx/docker ...   Up      0.0.0.0:8082->8080/tcp
 ```
@@ -29,7 +29,7 @@ swagger-ui       sh /usr/share/nginx/docker ...   Up      0.0.0.0:8082->8080/tcp
 
 ### swagger-editor
 - swagger specを編集出来る
-- swagger specはjson, yaml形式などにしてエクスポート出来て、swagger-uiから参照するとドキュメントとして見れる。swagger-mock-openapiからjsonを参照するとモックAPIサーバーになる
+- swagger specはjson, yaml形式などにしてエクスポート出来て、swagger-uiから参照するとドキュメントとして見れる。swagger-apiからjsonを参照するとモックAPIサーバーになる
 
 ### swagger-ui
 - swagger specをドキュメントとして見れる
@@ -41,7 +41,9 @@ environment:
 ```
 - このレポジトリの./swagger/openapi.jsonが参照先になっている
 
-### swagger-api(swagger-mock-openapi)
+### swagger-api(apisprout)
+- 内部的に[apisprout](https://github.com/danielgtaylor/apisprout)を使用しています
+- swagger specは`openapi: 3.x`に対応しています
 - こちらも./swagger/openapi.jsonが参照先になっている
 - もちろんcurl等で叩けます
 
