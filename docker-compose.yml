@@ -10,15 +10,16 @@ swagger-ui:
   ports:
     - "8082:8080"
   volumes:
-    - ./swagger/swagger.json:/swagger.json
+    - ./swagger/openapi.json:/openapi.json
   environment:
-    SWAGGER_JSON: /swagger.json
+    SWAGGER_JSON: /openapi.json
     # API_URL: ""
 
 swagger-api:
-  image: matsudachikara/swagger-mock-api
+  image: danielgtaylor/apisprout
   container_name: "swagger-api"
   ports:
     - "8083:8000"
   volumes:
-    - ./swagger:/data
+    - ./swagger/openapi.json:/openapi.json
+  command: /openapi.json
