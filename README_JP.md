@@ -1,6 +1,7 @@
 ## swagger-all-in-one-docker-container
 ### 概要
 Swagger EditorとSwagger UIとSwaggerのモックAPIサーバー(openapi: 3.x)を手軽に同時に環境に立ち上げられるようdocker-compose化してみました
+もしswagger specを`swagger: "2.0"`形式で書きたい場合は`swagger2.0`branchをお使いください
 このコンテナには初期でサンプルのswagger specが入っていて、editor, ui, apiが初期状態で立ち上がり、最初から設定無しで起動出来るようになってます
 あとはEditorでopenapi.jsonを保存しコンテナを立ち上げ直すだけで、UIとモックAPIサーバーを最新に更新していくことが出来ます
 
