@@ -15,6 +15,7 @@ docker-compose ps
 ----------------------------------------------------------------------------------------
 swagger-api      /usr/local/bin/apisprout / ...   Up      0.0.0.0:8083->8000/tcp
 swagger-editor   sh /usr/share/nginx/docker ...   Up      0.0.0.0:8081->8080/tcp
+swagger-nginx    nginx -g daemon off;             Up      80/tcp, 0.0.0.0:8084->8084/tcp
 swagger-ui       sh /usr/share/nginx/docker ...   Up      0.0.0.0:8082->8080/tcp
 ```
 
@@ -23,10 +24,12 @@ swagger-ui       sh /usr/share/nginx/docker ...   Up      0.0.0.0:8082->8080/tcp
 2. Save swagger spec as json from swagger-editor File menu
 3. Move and save the json file as `swagger/openapi.json`
 4. Execute `docker-compose restart` and swagger-ui and swagger-api(mock server) will be updated
+5. If you want to read an external openapi.json file, import the file from swagger-editor `File > Import File` menu.
 
 ### Heads-up
 - When the UI is referenced as `http://localhost:8082/`, cache might be used even the changes are made in swagger files. So it may be better to refference as `http://127.0.0.1:8082/`(api, too.)
-- Whern swagger-api failed to run, it's likely that api server failed to run because the openapi.json was not properly read. So use `docker logs` command and get rid of the cause then restart it again.
+- When swagger-api failed to run, it's likely that api server failed to run because the openapi.json was not properly read. So use `docker logs` command and get rid of the cause then restart it again.
+- If you want to access swagger-api from other domains(CORS), access swagger-api through swagger-nginx.
 
 ### swagger-editor
 - Can edit swagger spec
@@ -45,16 +48,32 @@ environment:
 ### swagger-api(apisprout)
 - Internally using [apisprout](https://github.com/danielgtaylor/apisprout) in docker.
 - swagger spec is compatible with `openapi: 3.x`.
-- ./swagger/openapi.json is also refferenced from api in this repository
+- ./swagger/openapi.json is also refferenced from api in this repository.
+- However, apisprout can not add `Access-Control-Allow-Origin` to Header so I put nginx in front of swagger-api and add it to Header then proxy to swagger-api.(To make it accessable from othe domains. CORS.)
+
+### swagger-nginx
+- Placed to modify Header.
+- Mock API(swagger-api) can be accessed from `8084` port via nginx.
 - Of course, you can use the api from curl, etc.
 
-  ```
-  * example
-  curl http://127.0.0.1:8083/pets/1 -H "accept: application/json"
+  ```json
+  * 例
+  curl -i -X GET http://127.0.0.1:8084/pets/1 -H "accept: application/json"
 
-    {
-      "id": 1,
-      "name": "doggie",
-      "tag": "dog"
-    }
+  HTTP/1.1 200 OK
+  Server: nginx/1.15.3
+  Date: Thu, 04 Oct 2018 07:58:19 GMT
+  Content-Type: application/json
+  Content-Length: 49
+  Connection: keep-alive
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: POST, GET, PATCH, DELETE, PUT, OPTIONS
+  Access-Control-Allow-Headers: Origin, Authorization, Accept
+  Access-Control-Allow-Credentials: true
+
+  {
+    "id": 1,
+    "name": "doggie",
+    "tag": "dog"
+  }
   ```
