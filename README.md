@@ -1,6 +1,6 @@
 ## swagger-all-in-one-docker-container
 ### Overview
-I docker composed Swagger Editor, Swagger UI and Swagger mock api server(openapi: 3.x) to handle them more easily.
+I docker composed Swagger Editor, Swagger UI, Swagger mock api server(openapi: 3.x) and nginx to handle them more easily.
 If you want to write swagger spec as `swagger: "2.0"`, use `swagger2.0` branch.
 There is a sample swagger spec in this so the Editor, UI and the mock API server will run without any configuration from the start.
 All you need to do is edit the swagger spec, save as openapi.json, and restart docker. Voila, UI and the mock API server are updated.
@@ -57,7 +57,7 @@ environment:
 - Of course, you can use the api from curl, etc.
 
   ```json
-  * 例
+  * example
   curl -i -X GET http://127.0.0.1:8084/pets/1 -H "accept: application/json"
 
   HTTP/1.1 200 OK
